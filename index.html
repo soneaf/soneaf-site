@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>soneaf.com — Home Server</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="status-badge">
+                <span class="dot"></span>
+                All Systems Online
+            </div>
+            <h1>soneaf.com</h1>
+            <p class="tagline">Steven's Home Server</p>
+            <p class="serving-from" id="serving-from"></p>
+        </header>
+
+        <section class="services">
+            <h2>Services</h2>
+            <div class="grid" id="service-grid"></div>
+        </section>
+
+        <section class="specs">
+            <h2>Infrastructure</h2>
+            <div class="spec-grid">
+                <div class="spec-item">
+                    <span class="spec-label">Host</span>
+                    <span class="spec-value">Mac Mini · Apple Silicon</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Web Server</span>
+                    <span class="spec-value">Nginx 1.29</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Containers</span>
+                    <span class="spec-value">Docker via Colima</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Tunnel</span>
+                    <span class="spec-value">Cloudflare Zero Trust</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">TLS</span>
+                    <span class="spec-value">Let's Encrypt · Tailscale</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">DNS</span>
+                    <span class="spec-value">Cloudflare · DuckDNS</span>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <a href="https://status.soneaf.com" id="status-link">System Status</a>
+            <span class="footer-sep">·</span>
+            <span id="footer-year"></span>
+        </footer>
+    </div>
+
+    <script>
+        const host = window.location.hostname;
+        const isTailscale = host.includes('tail829a41.ts.net');
+        const isSoneaf = host.includes('soneaf.com');
+
+        const services = isTailscale ? [
+            { icon: '🐳', name: 'Portainer', desc: 'Container Management', href: '/portainer/' },
+            { icon: '📊', name: 'Uptime Kuma', desc: 'Server Monitoring', href: '/status/' },
+            { icon: '🔒', name: 'Tailscale', desc: 'VPN · Active', href: '#' },
+        ] : isSoneaf ? [
+            { icon: '🐳', name: 'Portainer', desc: 'Container Management', href: 'https://portainer.soneaf.com' },
+            { icon: '📊', name: 'Uptime Kuma', desc: 'Server Monitoring', href: 'https://status.soneaf.com' },
+            { icon: '🔒', name: 'Remote Access', desc: 'Tailscale VPN', href: 'https://stevens-mac-mini.tail829a41.ts.net' },
+        ] : [
+            { icon: '🐳', name: 'Portainer', desc: 'Container Management', href: 'https://portainer.fatones.duckdns.org' },
+            { icon: '📊', name: 'Uptime Kuma', desc: 'Server Monitoring', href: 'https://status.fatones.duckdns.org' },
+            { icon: '🔒', name: 'Remote Access', desc: 'Tailscale VPN', href: 'https://stevens-mac-mini.tail829a41.ts.net' },
+        ];
+
+        const grid = document.getElementById('service-grid');
+        services.forEach(s => {
+            grid.innerHTML += `
+                <a href="${s.href}" class="card">
+                    <div class="icon">${s.icon}</div>
+                    <h3>${s.name}</h3>
+                    <p>${s.desc}</p>
+                </a>`;
+        });
+
+        document.getElementById('serving-from').textContent = window.location.origin;
+        document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+        if (!isSoneaf) {
+            document.getElementById('status-link').href = 'https://status.fatones.duckdns.org';
+        }
+    </script>
+</body>
+</html>
